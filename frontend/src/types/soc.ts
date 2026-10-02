@@ -1,19 +1,45 @@
-export type Severity = "critical" | "high" | "medium" | "low";
+export type Severity =
+  | "critical"
+  | "high"
+  | "medium"
+  | "low";
 
-export const SEVERITIES: Severity[] = ["critical", "high", "medium", "low"];
+export const SEVERITIES: Severity[] = [
+  "critical",
+  "high",
+  "medium",
+  "low",
+];
 
-export function normalizeSeverity(value: string | null | undefined): Severity {
-  const v = (value ?? "").toLowerCase();
-  if (v === "critical" || v === "high" || v === "medium" || v === "low") return v;
+export function normalizeSeverity(
+  value: string | null | undefined,
+): Severity {
+  const v = (
+    value ?? ""
+  ).toLowerCase();
+
+  if (
+    v === "critical" ||
+    v === "high" ||
+    v === "medium" ||
+    v === "low"
+  ) {
+    return v;
+  }
+
   return "low";
 }
 
-export function severityFromScore(score: number): Severity {
+export function severityFromScore(
+  score: number,
+): Severity {
   if (score >= 80) return "critical";
   if (score >= 60) return "high";
   if (score >= 30) return "medium";
+
   return "low";
 }
+
 
 /** POST /auth/login */
 export interface LoginRequest {
@@ -26,6 +52,7 @@ export interface LoginResponse {
   token_type: string;
 }
 
+
 /** GET /dashboard/stats */
 export interface DashboardStats {
   total_incidents: number;
@@ -33,7 +60,9 @@ export interface DashboardStats {
   high: number;
   medium: number;
   low: number;
-  attack_types?: Record<string, number> | AttackTypeCount[];
+  attack_types?:
+    | Record<string, number>
+    | AttackTypeCount[];
   top_ips?: TopAttackerIp[];
   mitre?: MitreActivity[];
 }
@@ -57,24 +86,59 @@ export interface MitreActivity {
   count: number;
 }
 
-/** GET /dashboard/recent */
+
+/** Incident workflow */
+export type IncidentStatus =
+  | "OPEN"
+  | "INVESTIGATING"
+  | "CONTAINED"
+  | "RESOLVED";
+
+
+/** GET /dashboard/recent / GET /incidents/{id} */
 export interface Incident {
   id: number | string;
+
   ip: string;
+
   attack: string;
+
   severity: string;
+
   risk_score: number;
+
   mitre_technique?: string;
+
   mitre_technique_name?: string;
+
   endpoint?: string;
+
   method?: string;
+
   status_code?: number;
-  timestamp: string;
+
+  /**
+   * HTTP status code.
+   * Example: 200, 401, 403.
+   */
   status?: string;
+
+  /**
+   * SOCVision incident workflow status.
+   */
+  incident_status?: IncidentStatus;
+
+  timestamp: string;
+
+  created_at?: string;
+
+  updated_at?: string;
+
   iocs?: string[];
 }
 
-/** GET /dashboard/timeline */
+
+/** Timeline */
 export interface TimelineEvent {
   id?: number | string;
   attack: string;
@@ -85,13 +149,16 @@ export interface TimelineEvent {
   timestamp: string;
 }
 
+
 /** POST /upload/ */
 export interface AnalyzerThreat {
   attack: string;
   severity: string;
   risk_score: number;
+  confidence?: number;
   mitre_technique?: string;
   reason?: string;
+  evidence?: string;
   ip?: string;
 }
 
@@ -104,4 +171,14 @@ export interface AnalyzerResult {
   risk_severity?: string;
   risk_score?: number;
   threats?: AnalyzerThreat[];
+}
+
+
+/** POST /ai/analyst/{incident_id} */
+export interface AIAnalystResponse {
+  incident_id: number;
+  available: boolean;
+  model?: string;
+  analysis?: string;
+  error?: string;
 }

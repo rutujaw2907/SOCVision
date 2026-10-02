@@ -7,28 +7,102 @@ from app.database import Base
 class UploadedLog(Base):
     __tablename__ = "uploaded_logs"
 
-    id = Column(Integer, primary_key=True, index=True)
-    filename = Column(String, nullable=False)
-    log_type = Column(String, nullable=False)
-    uploaded_at = Column(DateTime, default=datetime.utcnow)
+    id = Column(
+        Integer,
+        primary_key=True,
+        index=True
+    )
+
+    filename = Column(
+        String,
+        nullable=False
+    )
+
+    log_type = Column(
+        String,
+        nullable=False
+    )
+
+    uploaded_at = Column(
+        DateTime,
+        default=datetime.utcnow
+    )
 
 
 class SecurityIncident(Base):
     __tablename__ = "security_incidents"
 
-    id = Column(Integer, primary_key=True, index=True)
-    ip = Column(String, index=True)
-    timestamp = Column(String)
-    method = Column(String)
-    path = Column(Text)
-    status = Column(String)
+    id = Column(
+        Integer,
+        primary_key=True,
+        index=True
+    )
 
-    attack = Column(String, index=True)
-    severity = Column(String, index=True)
-    risk_score = Column(Integer)
+    ip = Column(
+        String,
+        index=True
+    )
 
-    mitre_technique = Column(String)
-    mitre_name = Column(String)
+    timestamp = Column(
+        String
+    )
 
-    iocs = Column(Text)
-    created_at = Column(DateTime, default=datetime.utcnow)
+    method = Column(
+        String
+    )
+
+    path = Column(
+        Text
+    )
+
+    status = Column(
+        String
+    )
+
+    attack = Column(
+        String,
+        index=True
+    )
+
+    severity = Column(
+        String,
+        index=True
+    )
+
+    risk_score = Column(
+        Integer
+    )
+
+    mitre_technique = Column(
+        String
+    )
+
+    mitre_name = Column(
+        String
+    )
+
+    iocs = Column(
+        Text
+    )
+
+    incident_status = Column(
+        String,
+        default="OPEN",
+        index=True
+    )
+
+    ai_analysis = Column(
+        Text,
+        nullable=True
+    )
+
+    created_at = Column(
+        DateTime,
+        default=datetime.utcnow
+    )
+
+    updated_at = Column(
+        DateTime,
+        default=datetime.utcnow,
+        onupdate=datetime.utcnow
+    )
